@@ -5,24 +5,42 @@ import TextField from "@mui/material/TextField";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { grey } from "@mui/material/colors";
 import { Button } from "@mui/material";
+import { styled } from "@mui/material/styles";
+import iconImg from "../../assets/ICON.svg";
+import { MdOutlineCloudUpload } from "react-icons/md";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { DemoContainer, DemoItem } from "@mui/x-date-pickers/internals/demo";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 export default function AdminPanel() {
+  const VisuallyHiddenInput = styled("input")({
+    clip: "rect(0 0 0 0)",
+    clipPath: "inset(50%)",
+    height: 1,
+    overflow: "hidden",
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    whiteSpace: "nowrap",
+    width: 1,
+  });
+
   const theme = createTheme({
     palette: {
-      mode:"dark",
+      mode: "dark",
       primary: {
         main: grey[50],
       },
     },
   });
-  console.log("Babith");
-  
+
   return (
     <>
       <nav className="flex h-20 w-full items-center justify-between px-10">
         <div className="flex gap-3">
-          <figure>""""</figure>
-          <h1 className="text-3xl font-bold">MuseBox</h1>
+          <figure>
+            <img src={iconImg} alt="Website icon" />
+          </figure>
         </div>
         <figure>
           <CgProfile size={35} />
@@ -99,14 +117,27 @@ export default function AdminPanel() {
         </div>
 
         {/* upload form  */}
-        <div className="w-full rounded-md bg-[#131313]">
-          <div className="flex h-[15rem] items-center justify-center">
-            <figure className="flex size-[10rem] items-center justify-center rounded-md bg-[#323232]">
-              <TbEdit size={25} />
-            </figure>
-          </div>
-            <ThemeProvider theme={theme}>
-          <form className="flex flex-wrap p-5 justify-around gap-5">
+        <ThemeProvider theme={theme}>
+          <div className="w-full rounded-md bg-[#131313]">
+            <div className="flex h-[15rem] items-center justify-center gap-5">
+              <Button
+                component="label"
+                role={undefined}
+                tabIndex={-1}
+                startIcon={""}
+                className="upload-button flex size-[10rem] items-center justify-center rounded-md"
+              >
+                <MdOutlineCloudUpload size={25} className="mr-2" /> Audio
+                <VisuallyHiddenInput
+                  type="file"
+                  onChange={(event) => console.log(event.target.files)}
+                />
+              </Button>
+              <figure className="flex size-[10rem] items-center justify-center rounded-md bg-[#323232]">
+                <TbEdit size={25} />
+              </figure>
+            </div>
+            <form className="flex flex-wrap justify-around gap-5 p-5">
               <TextField
                 id="Outlined"
                 color="primary"
@@ -151,17 +182,40 @@ export default function AdminPanel() {
                 id="Outlined"
                 color="primary"
                 label="Duration"
+                disabled={false}
+                placeholder="00H:00M:00S"
                 variant="outlined"
                 className="customTextField w-[40%]"
                 InputLabelProps={{ className: "outlined_label" }}
               />
-              <div className="w-[90%] flex gap-5 justify-end">
-                <Button variant="outlined" color="error">cancel</Button>
-                <Button variant="outlined">Add</Button>
+              <div className="w-[40%]">
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DemoContainer components={["DatePicker"]}>
+                    <DemoItem>
+                      <DatePicker
+                        className="date-picker w-full"
+                        label={"Published Date"}
+                      />
+                    </DemoItem>
+                  </DemoContainer>
+                </LocalizationProvider>
               </div>
-          </form>
-            </ThemeProvider>
-        </div>
+              <div className="flex w-[40%] justify-end gap-5">
+                <Button
+                  variant="outlined"
+                  color="error"
+                  className="w-full text-white"
+                  type="button"
+                >
+                  cancel
+                </Button>
+                <Button variant="outlined" className="w-full" type="submit">
+                  Add
+                </Button>
+              </div>
+            </form>
+          </div>
+        </ThemeProvider>
       </section>
     </>
   );

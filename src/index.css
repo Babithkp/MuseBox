@@ -17,10 +17,10 @@ html{
     align-content: center;
 }
 
-.customTextField .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline{
-    border-color: white;
+.upload-button{
+    background-color: #323232 !important;
 }
 
-.outlined_label{
-    color: aliceblue !important; 
+.date-picker{
+    width: 100% !important;
 }
