@@ -12,7 +12,11 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { DemoContainer, DemoItem } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
+
 export default function AdminPanel() {
+  
+
+  
   const VisuallyHiddenInput = styled("input")({
     clip: "rect(0 0 0 0)",
     clipPath: "inset(50%)",
@@ -51,10 +55,10 @@ export default function AdminPanel() {
       <section className="mb-5 flex w-[94%] items-center justify-between">
         <h2 className="text-3xl font-semibold">Welcome Back!</h2>
         <div className="flex items-center gap-5">
-          <p className="rounded-md border p-2 text-xl font-medium">
+          <p className="rounded-md border p-2 text-lg font-medium">
             Total Songs Published 500
           </p>
-          <button className="rounded-md border p-2 text-xl font-medium">
+          <button className="rounded-md border p-2 text-lg font-medium">
             + Add
           </button>
         </div>
@@ -118,8 +122,8 @@ export default function AdminPanel() {
 
         {/* upload form  */}
         <ThemeProvider theme={theme}>
-          <div className="w-full rounded-md bg-[#131313]">
-            <div className="flex h-[15rem] items-center justify-center gap-5">
+          <div className="w-full flex flex-col justify-evenly rounded-md bg-[#131313]">
+            <div className="flex  items-center justify-center gap-5">
               <Button
                 component="label"
                 role={undefined}
@@ -133,8 +137,8 @@ export default function AdminPanel() {
                   onChange={(event) => console.log(event.target.files)}
                 />
               </Button>
-              <figure className="flex size-[10rem] items-center justify-center rounded-md bg-[#323232]">
-                <TbEdit size={25} />
+              <figure className="flex gap-2 size-[10rem] items-center justify-center rounded-md bg-[#323232]">
+                <TbEdit size={25} /> Thumbnail
               </figure>
             </div>
             <form className="flex flex-wrap justify-around gap-5 p-5">
