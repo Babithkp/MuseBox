@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    @font-face {
+        font-family: 'quicksand';
+        src: url("../src/assets/Quicksand-VariableFont_wght.ttf");
+    }
+}
+
+html{
+    font-family: quicksand;
+    background-color: black;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+}
+
+.customTextField .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline{
+    border-color: white;
+}
+
+.outlined_label{
+    color: aliceblue !important; 
+}
