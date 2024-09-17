@@ -1,42 +1,56 @@
 import { CgProfile } from "react-icons/cg";
 import { IoMdSearch } from "react-icons/io";
 import { TbEdit } from "react-icons/tb";
-import TextField from "@mui/material/TextField";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { grey } from "@mui/material/colors";
-import { Button } from "@mui/material";
-import { styled } from "@mui/material/styles";
 import iconImg from "../../assets/ICON.svg";
-import { MdOutlineCloudUpload } from "react-icons/md";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { DemoContainer, DemoItem } from "@mui/x-date-pickers/internals/demo";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-
-
+import UploadForm from "./UploadForm";
+import { useEffect, useState } from "react";
+import { getSongData } from "../../api/https";
+interface SongType {
+  id: string;
+  songName: string;
+  artist: string;
+  audioType: string;
+  albumName: string;
+  language: string;
+  duration: string;
+  releaseDate: string;
+  songUrl: string;
+  thunbnailUrl: string;
+}
 export default function AdminPanel() {
-  
+  const [songlist, setSongList] = useState<SongType[]>([]);
 
-  
-  const VisuallyHiddenInput = styled("input")({
-    clip: "rect(0 0 0 0)",
-    clipPath: "inset(50%)",
-    height: 1,
-    overflow: "hidden",
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    whiteSpace: "nowrap",
-    width: 1,
-  });
+  function formatDate(date: string) {
+    const d = new Date(date);
+    let month = `${d.getMonth() + 1}`;
+    let day = `${d.getDate()}`;
+    const year = d.getFullYear();
+    if (month.length < 2) month = `0${month}`;
+    if (day.length < 2) day = `0${day}`;
+    return [day, month, year].join("-");
+  }
 
-  const theme = createTheme({
-    palette: {
-      mode: "dark",
-      primary: {
-        main: grey[50],
-      },
-    },
-  });
+  useEffect(() => {
+    songlist.map((song) => {
+      song.releaseDate = formatDate(song.releaseDate);
+    });
+  }, [songlist]);
+
+  useEffect(() => {
+    async function fetch() {
+      const response = await getSongData();
+      if (response) {
+        if (response.status === 200) {
+          const fetchedList: SongType[] = response.data.data;
+          fetchedList.map((song) => {
+            song.releaseDate = formatDate(song.releaseDate);
+          });
+          setSongList(fetchedList);
+        }
+      }
+    }
+    fetch();
+  }, []);
 
   return (
     <>
@@ -56,7 +70,7 @@ export default function AdminPanel() {
         <h2 className="text-3xl font-semibold">Welcome Back!</h2>
         <div className="flex items-center gap-5">
           <p className="rounded-md border p-2 text-lg font-medium">
-            Total Songs Published 500
+            Total Songs Published {songlist.length}
           </p>
           <button className="rounded-md border p-2 text-lg font-medium">
             + Add
@@ -64,9 +78,9 @@ export default function AdminPanel() {
         </div>
       </section>
 
-      <section className="flex h-[35rem] w-[95%] gap-10">
+      <section className="flex h-[35rem] w-[95%] gap-10 ">
         {/* search section  */}
-        <div className="flex w-[35%] flex-col gap-3 rounded-md bg-[#131313] p-5">
+        <div className="flex w-[35%] flex-col gap-3 rounded-md bg-[#131313] p-5 overflow-y-auto">
           <div className="flex items-center gap-5 rounded-md bg-[#323232] p-1 font-medium">
             <IoMdSearch size={25} />
             <input
@@ -76,7 +90,7 @@ export default function AdminPanel() {
           </div>
 
           {/* filters button */}
-          <div className="flex gap-2">
+          <div className="flex gap-2 ">
             <span className="rounded-md border p-1 px-2">All</span>
             <span className="rounded-md bg-[#323232] p-1 px-2">Songs</span>
             <span className="rounded-md bg-[#323232] p-1 px-2">Albums</span>
@@ -84,142 +98,29 @@ export default function AdminPanel() {
 
           {/* songs list */}
           <>
-            <div className="flex items-center justify-between rounded-md bg-[#323232] p-3 text-sm">
-              <div className="size-10 rounded-md bg-[#D9D9D9]"></div>
-              <div>
-                <p>Song Name</p>
-                <p>Artist Name</p>
-                <p>Date Published - DD/MM/YY</p>
+            {songlist?.map((song) => (
+              <div
+                key={song.id}
+                className="flex items-center justify-between gap-1 rounded-md bg-[#323232] p-3 text-xs"
+              >
+                <div className="size-10 rounded-md bg-[#D9D9D9]">
+                  <img src={`https://musebox-s3bucket.s3.ap-south-1.amazonaws.com/museBox/thumbnails/${song.thunbnailUrl}`} />
+                </div>
+                <div className="flex flex-1 flex-col">
+                  <p>{song.songName}</p>
+                  <p>{song.artist}</p>
+                  <p>Date Published {song.releaseDate}</p>
+                </div>
+                <button>
+                  <TbEdit size={25} />
+                </button>
               </div>
-              <button>
-                <TbEdit size={25} />
-              </button>
-            </div>
-            <div className="flex items-center justify-between rounded-md bg-[#323232] p-3 text-sm">
-              <div className="size-10 rounded-md bg-[#D9D9D9]"></div>
-              <div>
-                <p>Song Name</p>
-                <p>Artist Name</p>
-                <p>Date Published - DD/MM/YY</p>
-              </div>
-              <button>
-                <TbEdit size={25} />
-              </button>
-            </div>
-            <div className="flex items-center justify-between rounded-md bg-[#323232] p-3 text-sm">
-              <div className="size-10 rounded-md bg-[#D9D9D9]"></div>
-              <div>
-                <p>Song Name</p>
-                <p>Artist Name</p>
-                <p>Date Published - DD/MM/YY</p>
-              </div>
-              <button>
-                <TbEdit size={25} />
-              </button>
-            </div>
+            ))}
           </>
         </div>
 
         {/* upload form  */}
-        <ThemeProvider theme={theme}>
-          <div className="w-full flex flex-col justify-evenly rounded-md bg-[#131313]">
-            <div className="flex  items-center justify-center gap-5">
-              <Button
-                component="label"
-                role={undefined}
-                tabIndex={-1}
-                startIcon={""}
-                className="upload-button flex size-[10rem] items-center justify-center rounded-md"
-              >
-                <MdOutlineCloudUpload size={25} className="mr-2" /> Audio
-                <VisuallyHiddenInput
-                  type="file"
-                  onChange={(event) => console.log(event.target.files)}
-                />
-              </Button>
-              <figure className="flex gap-2 size-[10rem] items-center justify-center rounded-md bg-[#323232]">
-                <TbEdit size={25} /> Thumbnail
-              </figure>
-            </div>
-            <form className="flex flex-wrap justify-around gap-5 p-5">
-              <TextField
-                id="Outlined"
-                color="primary"
-                label="Song Name"
-                variant="outlined"
-                className="customTextField w-[40%]"
-                InputLabelProps={{ className: "outlined_label" }}
-              />
-              <TextField
-                id="Outlined"
-                color="primary"
-                label="Artist"
-                variant="outlined"
-                className="customTextField w-[40%]"
-                InputLabelProps={{ className: "outlined_label" }}
-              />
-              <TextField
-                id="Outlined"
-                color="primary"
-                label="Audio Type"
-                variant="outlined"
-                className="customTextField w-[40%]"
-                InputLabelProps={{ className: "outlined_label" }}
-              />
-              <TextField
-                id="Outlined"
-                color="primary"
-                label="Album Name"
-                variant="outlined"
-                className="customTextField w-[40%]"
-                InputLabelProps={{ className: "outlined_label" }}
-              />
-              <TextField
-                id="Outlined"
-                color="primary"
-                label="Language"
-                variant="outlined"
-                className="customTextField w-[40%]"
-                InputLabelProps={{ className: "outlined_label" }}
-              />
-              <TextField
-                id="Outlined"
-                color="primary"
-                label="Duration"
-                disabled={false}
-                placeholder="00H:00M:00S"
-                variant="outlined"
-                className="customTextField w-[40%]"
-                InputLabelProps={{ className: "outlined_label" }}
-              />
-              <div className="w-[40%]">
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DemoContainer components={["DatePicker"]}>
-                    <DemoItem>
-                      <DatePicker
-                        className="date-picker w-full"
-                        label={"Published Date"}
-                      />
-                    </DemoItem>
-                  </DemoContainer>
-                </LocalizationProvider>
-              </div>
-              <div className="flex w-[40%] justify-end gap-5">
-                <Button
-                  variant="outlined"
-                  color="error"
-                  className="w-full text-white"
-                  type="button"
-                >
-                  cancel
-                </Button>
-                <Button variant="outlined" className="w-full" type="submit">
-                  Add
-                </Button>
-              </div>
-            </form>
-          </div>
-        </ThemeProvider>
+        <UploadForm />
       </section>
     </>
   );
